@@ -14,6 +14,6 @@ return [
     'admin_password' => env('ADMIN_PASSWORD', 'changeme'),
     'inquiry_notify_email' => env('INQUIRY_NOTIFY_EMAIL', env('MAIL_FROM_ADDRESS')),
 
-    /** Max upload size for admin images (kilobytes). Match PHP upload_max_filesize / post_max_size in production. */
+    /** Max upload size for admin images (kilobytes). Default 20480 = 20 MB. Match PHP upload_max_filesize / post_max_size in production. */
     'admin_image_max_kb' => (int) env('ADMIN_IMAGE_MAX_KB', 20480),
 ];

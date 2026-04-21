@@ -64,7 +64,7 @@ class PageController extends Controller
             'blocks.hero_slides.*.secondary_cta_label' => ['nullable', 'string', 'max:255'],
             'blocks.hero_slides.*.secondary_cta_url' => ['nullable', 'string', 'max:2048'],
             'hero_slide_image_file' => ['nullable', 'array'],
-            'hero_slide_image_file.*' => ['nullable', 'image', 'max:20480'],
+            'hero_slide_image_file.*' => ['nullable', 'image', $this->adminImageMaxKbRule()],
         ]);
 
         $existing = is_array($page->blocks) ? $page->blocks : [];
@@ -109,7 +109,7 @@ class PageController extends Controller
             'blocks.hero_slides.*.secondary_cta_label' => ['nullable', 'string', 'max:255'],
             'blocks.hero_slides.*.secondary_cta_url' => ['nullable', 'string', 'max:2048'],
             'hero_slide_image_file' => ['nullable', 'array'],
-            'hero_slide_image_file.*' => ['nullable', 'image', 'max:20480'],
+            'hero_slide_image_file.*' => ['nullable', 'image', $this->adminImageMaxKbRule()],
             'blocks.cta_title' => ['nullable', 'string', 'max:255'],
             'blocks.cta_text' => ['nullable', 'string', 'max:2000'],
             'blocks.why_points' => ['nullable', 'array', 'max:12'],
@@ -123,9 +123,9 @@ class PageController extends Controller
             'blocks.flex_blocks.*.layout' => ['nullable', 'string', 'in:image_left,image_right'],
             'blocks.flex_blocks.*.image_path' => ['nullable', 'string', 'max:2048'],
             'blocks.flex_blocks.*.image_url' => ['nullable', 'string', 'max:2048'],
-            'blocks.flex_blocks.*.image_file' => ['nullable', 'image', 'max:20480'],
+            'blocks.flex_blocks.*.image_file' => ['nullable', 'image', $this->adminImageMaxKbRule()],
             'flex_block_image_file' => ['nullable', 'array'],
-            'flex_block_image_file.*' => ['nullable', 'image', 'max:20480'],
+            'flex_block_image_file.*' => ['nullable', 'image', $this->adminImageMaxKbRule()],
             'blocks.flex_blocks.*.image_alt' => ['nullable', 'string', 'max:500'],
             'blocks.flex_blocks.*.heading' => ['nullable', 'string', 'max:255'],
             'blocks.flex_blocks.*.body_html' => ['nullable', 'string', 'max:100000'],
@@ -133,19 +133,19 @@ class PageController extends Controller
             'blocks.flex_blocks.*.left_path' => ['nullable', 'string', 'max:2048'],
             'blocks.flex_blocks.*.left_url' => ['nullable', 'string', 'max:2048'],
             'blocks.flex_blocks.*.left_alt' => ['nullable', 'string', 'max:500'],
-            'blocks.flex_blocks.*.left_file' => ['nullable', 'image', 'max:20480'],
+            'blocks.flex_blocks.*.left_file' => ['nullable', 'image', $this->adminImageMaxKbRule()],
             'flex_block_left_file' => ['nullable', 'array'],
-            'flex_block_left_file.*' => ['nullable', 'image', 'max:20480'],
+            'flex_block_left_file.*' => ['nullable', 'image', $this->adminImageMaxKbRule()],
             'blocks.flex_blocks.*.right_path' => ['nullable', 'string', 'max:2048'],
             'blocks.flex_blocks.*.right_url' => ['nullable', 'string', 'max:2048'],
             'blocks.flex_blocks.*.right_alt' => ['nullable', 'string', 'max:500'],
-            'blocks.flex_blocks.*.right_file' => ['nullable', 'image', 'max:20480'],
+            'blocks.flex_blocks.*.right_file' => ['nullable', 'image', $this->adminImageMaxKbRule()],
             'flex_block_right_file' => ['nullable', 'array'],
-            'flex_block_right_file.*' => ['nullable', 'image', 'max:20480'],
+            'flex_block_right_file.*' => ['nullable', 'image', $this->adminImageMaxKbRule()],
             'blocks.flex_blocks.*.html' => ['nullable', 'string', 'max:100000'],
             'blocks.flex_blocks.*.heading' => ['nullable', 'string', 'max:255'],
             'blocks.hero_header_image_path' => ['nullable', 'string', 'max:2048'],
-            'hero_header_image_file' => ['nullable', 'image', 'max:20480'],
+            'hero_header_image_file' => ['nullable', 'image', $this->adminImageMaxKbRule()],
             'remove_hero_header_image' => ['sometimes', 'boolean'],
         ]);
 
@@ -525,6 +525,11 @@ class PageController extends Controller
         }
 
         return $out;
+    }
+
+    private function adminImageMaxKbRule(): string
+    {
+        return 'max:'.config('lakegarda.admin_image_max_kb');
     }
 
     private function str(?string $value, int $max): string
