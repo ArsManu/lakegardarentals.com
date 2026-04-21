@@ -61,4 +61,31 @@ class ApartmentImageUploadTest extends TestCase
         $response->assertSessionHasNoErrors();
         $this->assertSame(1, ApartmentImage::query()->where('apartment_id', $apartment->id)->count());
     }
+
+    public function test_admin_can_set_gallery_image_sort_priority(): void
+    {
+        Storage::fake('public');
+
+        $admin = User::factory()->admin()->create();
+        $apartment = Apartment::factory()->create();
+        $image = ApartmentImage::factory()->create([
+            'apartment_id' => $apartment->id,
+            'sort_order' => 10,
+        ]);
+
+        $response = $this->actingAs($admin)->patch(
+            route('admin.apartments.images.update', [$apartment, $image]),
+            [
+                'alt_text' => 'Living room',
+                'sort_order' => 3,
+            ]
+        );
+
+        $response->assertRedirect();
+        $response->assertSessionHasNoErrors();
+
+        $image->refresh();
+        $this->assertSame(3, $image->sort_order);
+        $this->assertSame('Living room', $image->alt_text);
+    }
 }

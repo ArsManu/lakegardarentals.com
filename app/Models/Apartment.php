@@ -59,7 +59,7 @@ class Apartment extends Model
 
     public function images(): HasMany
     {
-        return $this->hasMany(ApartmentImage::class)->orderBy('sort_order');
+        return $this->hasMany(ApartmentImage::class)->orderBy('sort_order')->orderBy('id');
     }
 
     public function seasons(): HasMany

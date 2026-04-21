@@ -111,6 +111,7 @@ class ApartmentImageController extends Controller
 
         $request->validate([
             'alt_text' => ['nullable', 'string', 'max:500'],
+            'sort_order' => ['required', 'integer', 'min:0', 'max:65535'],
             'replace_image' => ['nullable', 'image', $this->imageMaxRule()],
         ]);
 
@@ -127,6 +128,7 @@ class ApartmentImageController extends Controller
         }
 
         $image->alt_text = $request->input('alt_text', $image->alt_text ?? '');
+        $image->sort_order = (int) $request->input('sort_order');
         $image->save();
 
         return back()->with('success', __('Image updated.'));
