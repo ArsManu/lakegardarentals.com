@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AmenityController;
 use App\Http\Controllers\Admin\ApartmentController as AdminApartmentController;
 use App\Http\Controllers\Admin\ApartmentImageController;
 use App\Http\Controllers\Admin\ApartmentSeasonController;
+use App\Http\Controllers\Admin\AccountSettingsController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\InquiryController as AdminInquiryController;
@@ -62,6 +63,8 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['auth', 'admin', 'noindex'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/settings', [AccountSettingsController::class, 'edit'])->name('settings.edit');
+    Route::patch('/settings', [AccountSettingsController::class, 'update'])->name('settings.update');
 
     Route::resource('apartments', AdminApartmentController::class)->except(['show']);
     // Avoid 405/blank page if someone opens the POST URL in a browser after a failed upload.

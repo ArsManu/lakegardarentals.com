@@ -14,6 +14,7 @@
             <div class="border-b border-stone-100 px-4 py-5 font-display text-lg font-semibold text-lake-900">{{ config('lakegarda.site_name') }}</div>
             <nav class="space-y-1 p-3 text-sm">
                 <a href="{{ route('admin.dashboard') }}" class="block rounded-lg px-3 py-2 hover:bg-stone-50">{{ __('Dashboard') }}</a>
+                <a href="{{ route('admin.settings.edit') }}" class="block rounded-lg px-3 py-2 hover:bg-stone-50">{{ __('Settings') }}</a>
                 <a href="{{ route('admin.apartments.index') }}" class="block rounded-lg px-3 py-2 hover:bg-stone-50">{{ __('Apartments') }}</a>
                 <a href="{{ route('admin.amenities.index') }}" class="block rounded-lg px-3 py-2 hover:bg-stone-50">{{ __('Amenities') }}</a>
                 <a href="{{ route('admin.inquiries.index') }}" class="block rounded-lg px-3 py-2 hover:bg-stone-50">{{ __('Inquiries') }}</a>
@@ -41,6 +42,9 @@
             <main class="flex-1 p-4 lg:p-8">
                 @if(session('success'))
                     <div class="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">{{ session('success') }}</div>
+                @endif
+                @if(session('status') === 'password-updated')
+                    <div class="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">{{ __('Password saved.') }}</div>
                 @endif
                 @if($errors->any())
                     <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900" role="alert">
