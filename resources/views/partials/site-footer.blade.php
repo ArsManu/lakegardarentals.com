@@ -4,7 +4,7 @@
 @endphp
 <footer class="relative border-t border-stone-200/90 bg-white text-stone-700">
     <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
-        @unless(localized_route_is('contact'))
+        @unless(request()->routeIs('contact'))
         <div class="grid gap-12 sm:gap-14 lg:grid-cols-12 lg:gap-12">
             {{-- Brand --}}
             <div class="lg:col-span-4">
@@ -76,7 +76,7 @@
 
         <div @class([
             'flex flex-col items-center justify-between gap-4 border-t border-stone-200 pt-10 sm:flex-row sm:items-center',
-            'mt-14' => ! localized_route_is('contact'),
+            'mt-14' => ! request()->routeIs('contact'),
         ])>
             <p class="text-center text-sm text-stone-500 sm:text-left">
                 &copy; {{ date('Y') }} {{ $siteName }}. {{ __('All rights reserved.') }}
