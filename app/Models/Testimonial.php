@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasStoredTranslations;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 
 class Testimonial extends Model
 {
     use HasFactory;
+    use HasStoredTranslations;
 
     protected $fillable = [
         'author_name',
@@ -17,6 +19,7 @@ class Testimonial extends Model
         'rating',
         'sort_order',
         'is_published',
+        'translations',
     ];
 
     protected function casts(): array
@@ -25,6 +28,16 @@ class Testimonial extends Model
             'rating' => 'integer',
             'sort_order' => 'integer',
             'is_published' => 'boolean',
+            'translations' => 'array',
+        ];
+    }
+
+    protected function translatableFieldNames(): array
+    {
+        return [
+            'author_name',
+            'author_location',
+            'quote',
         ];
     }
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', (string) (config('locales.html_lang')[app()->getLocale()] ?? app()->getLocale())) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,7 +14,7 @@
     @include('partials.site-header')
     <main id="main-content" class="w-full min-w-0 max-w-full overflow-x-clip">
         @yield('content')
-        @unless(request()->routeIs('apartments.show', 'contact'))
+        @unless(localized_route_is_any(['apartments.show', 'contact']))
             @include('partials.site-pre-footer')
         @endunless
     </main>

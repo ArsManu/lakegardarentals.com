@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Middleware\AddNoIndexHeader;
+use App\Http\Middleware\EnsureUserIsAdmin;
+use App\Http\Middleware\SetLocaleFromPrefix;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,8 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
-            'noindex' => \App\Http\Middleware\AddNoIndexHeader::class,
+            'admin' => EnsureUserIsAdmin::class,
+            'noindex' => AddNoIndexHeader::class,
+            'locale' => SetLocaleFromPrefix::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

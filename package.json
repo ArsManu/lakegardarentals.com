@@ -4,7 +4,10 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "dev:all": "concurrently -k -c auto -n vite,serve,queue \"npm run dev\" \"php artisan serve\" \"php artisan queue:work --sleep=1 --tries=2\"",
+        "dev:laravel": "concurrently -k -c auto -n serve,queue \"php artisan serve\" \"php artisan queue:work --sleep=1 --tries=2\"",
+        "dev:queue": "php artisan queue:work"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",

@@ -8,7 +8,7 @@
         <div class="grid gap-12 sm:gap-14 lg:grid-cols-12 lg:gap-12">
             {{-- Brand --}}
             <div class="lg:col-span-4">
-                <a href="{{ route('home') }}" class="group inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white">
+                <a href="{{ localized_route('home') }}" class="group inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white">
                     <p class="font-display text-2xl font-semibold tracking-tight text-lake-950 transition group-hover:text-lake-900 sm:text-3xl">{{ $siteName }}</p>
                     <span class="mt-3 block h-px w-12 bg-gradient-to-r from-gold-500 to-gold-500/30 transition-all duration-300 group-hover:w-16" aria-hidden="true"></span>
                 </a>
@@ -60,13 +60,13 @@
                 <nav class="mt-5" aria-label="{{ __('Footer') }}">
                     <ul class="space-y-1">
                         <li>
-                            <a href="{{ route('apartments.index') }}" class="inline-flex rounded-lg px-2 py-2 text-base font-medium text-stone-700 transition hover:bg-stone-100 hover:text-lake-950">{{ __('Apartments') }}</a>
+                            <a href="{{ localized_route('apartments.index') }}" class="inline-flex rounded-lg px-2 py-2 text-base font-medium text-stone-700 transition hover:bg-stone-100 hover:text-lake-950">{{ __('Apartments') }}</a>
                         </li>
                         <li>
-                            <a href="{{ route('lake-garda') }}" class="inline-flex rounded-lg px-2 py-2 text-base font-medium text-stone-700 transition hover:bg-stone-100 hover:text-lake-950">{{ __('Lake Garda') }}</a>
+                            <a href="{{ localized_route('lake-garda') }}" class="inline-flex rounded-lg px-2 py-2 text-base font-medium text-stone-700 transition hover:bg-stone-100 hover:text-lake-950">{{ __('Lake Garda') }}</a>
                         </li>
                         <li>
-                            <a href="{{ route('contact') }}" class="inline-flex rounded-lg px-2 py-2 text-base font-medium text-stone-700 transition hover:bg-stone-100 hover:text-lake-950">{{ __('Contact & booking') }}</a>
+                            <a href="{{ localized_route('contact') }}" class="inline-flex rounded-lg px-2 py-2 text-base font-medium text-stone-700 transition hover:bg-stone-100 hover:text-lake-950">{{ __('Contact & booking') }}</a>
                         </li>
                     </ul>
                 </nav>
@@ -81,7 +81,7 @@
             <p class="text-center text-sm text-stone-500 sm:text-left">
                 &copy; {{ date('Y') }} {{ $siteName }}. {{ __('All rights reserved.') }}
             </p>
-            <a href="{{ route('contact') }}#inquiry" class="text-sm font-semibold text-lake-900 transition hover:text-gold-600">{{ __('Plan your stay') }} →</a>
+            <a href="{{ localized_route('contact') }}#inquiry" class="text-sm font-semibold text-lake-900 transition hover:text-gold-600">{{ __('Plan your stay') }} →</a>
         </div>
     </div>
 </footer>

@@ -6,7 +6,7 @@
     $headerHeroSrc = MediaUrl::public($b['hero_header_image_path'] ?? '');
     $metaTitle = $page->meta_title ?? __('Contact — booking requests');
     $metaDesc = $page->meta_description;
-    $canonical = $page->canonical_url ?? url('/contact');
+    $canonical = $page->canonical_url ?? localized_route('contact');
     $waNumber = $siteWhatsapp ?: $sitePhoneTel;
     $waUrl = $waNumber ? 'https://wa.me/'.preg_replace('/\D/', '', $waNumber) : null;
 @endphp
@@ -76,7 +76,7 @@
                     @foreach($apartmentsWithLicenses as $apt)
                     <div>
                         <dt class="font-semibold text-lake-950">
-                            <a href="{{ route('apartments.show', $apt) }}" class="transition hover:text-lake-800 hover:underline">{{ $apt->name }}</a>
+                            <a href="{{ localized_route('apartments.show', ['apartment' => $apt]) }}" class="transition hover:text-lake-800 hover:underline">{{ $apt->name }}</a>
                         </dt>
                         <dd class="mt-2 space-y-1">
                             @if(filled($apt->license_cir))
@@ -100,7 +100,7 @@
         <div class="rounded-2xl border border-stone-200 bg-white p-8 shadow-sm">
             <h2 class="font-display text-xl font-semibold text-lake-950">{{ __('Booking request') }}</h2>
             <x-inquiry-form
-                :action-url="route('contact.store')"
+                :action-url="localized_route('contact.store')"
                 :apartments="$apartments"
                 source-page="contact"
                 :submit-label="__('Send message')"

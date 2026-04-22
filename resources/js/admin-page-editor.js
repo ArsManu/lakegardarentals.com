@@ -137,8 +137,12 @@ function attachQuillToTextarea(textarea) {
     if (initial) {
         quill.clipboard.dangerouslyPasteHTML(initial);
     }
+    const form = wrap.closest('form');
     const sync = () => {
         textarea.value = quill.getSemanticHTML();
+        if (form) {
+            form.dispatchEvent(new Event('input', { bubbles: true }));
+        }
     };
     quill.on('text-change', sync);
     sync();
@@ -425,8 +429,53 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('flexEditor', createFlexEditor);
 });
 
+function formSnapshotExcludingFiles(form) {
+    const data = new FormData(form);
+    const parts = [];
+    for (const [k, v] of data.entries()) {
+        if (v instanceof File) {
+            continue;
+        }
+        parts.push(
+            `${encodeURIComponent(k)}=${encodeURIComponent(
+                v === null || v === undefined ? '' : String(v),
+            )}`,
+        );
+    }
+    return parts.sort().join('&');
+}
+
+function formHasFileSelection(form) {
+    return Array.from(form.querySelectorAll('input[type="file"]')).some(
+        (i) => i.files && i.files.length > 0,
+    );
+}
+
+/**
+ * Disables the primary save button on CMS forms until a field (or file) actually changes.
+ */
+function initAdminDirtySaveForms() {
+    document.querySelectorAll('form[data-admin-dirty-form]').forEach((form) => {
+        const submitBtn = form.querySelector('button.js-primary-save');
+        if (!submitBtn || form.dataset.dirtyFormBound === '1') {
+            return;
+        }
+        form.dataset.dirtyFormBound = '1';
+        const baseline = formSnapshotExcludingFiles(form);
+        const recompute = () => {
+            const hasFile = formHasFileSelection(form);
+            const dirty = hasFile || formSnapshotExcludingFiles(form) !== baseline;
+            submitBtn.disabled = !dirty;
+        };
+        form.addEventListener('input', recompute, true);
+        form.addEventListener('change', recompute, true);
+        recompute();
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     scanQuillFields();
+    requestAnimationFrame(() => initAdminDirtySaveForms());
     document.querySelectorAll('form').forEach((form) => {
         if (!form.querySelector('[data-flex-editor]')) {
             return;
@@ -456,12 +505,20 @@ document.addEventListener('page-flex-block-added', () => {
             document.querySelectorAll('[data-flex-editor] textarea.js-quill-source').forEach((textarea) => {
                 attachQuillToTextarea(textarea);
             });
+            document
+                .querySelectorAll('form[data-admin-dirty-form][data-dirty-form-bound="1"]')
+                .forEach((form) => {
+                    form.dispatchEvent(new Event('input', { bubbles: true }));
+                });
         });
     });
 });
 
 document.addEventListener('alpine:initialized', () => {
-    requestAnimationFrame(() => scanQuillFields());
+    requestAnimationFrame(() => {
+        scanQuillFields();
+        initAdminDirtySaveForms();
+    });
 });
 
 window.initAdminPageEditor = {

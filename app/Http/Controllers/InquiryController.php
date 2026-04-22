@@ -34,7 +34,7 @@ class InquiryController extends Controller
 
         Mail::to(config('lakegarda.inquiry_notify_email'))->send(new InquiryReceived($inquiry));
 
-        return redirect()->route('thank-you')->with('inquiry_id', $inquiry->id);
+        return redirect()->to(localized_route('thank-you'))->with('inquiry_id', $inquiry->id);
     }
 
     public function storeContact(StoreContactInquiryRequest $request): RedirectResponse
@@ -61,7 +61,7 @@ class InquiryController extends Controller
 
         Mail::to(config('lakegarda.inquiry_notify_email'))->send(new InquiryReceived($inquiry));
 
-        return redirect()->route('thank-you')->with('inquiry_id', $inquiry->id);
+        return redirect()->to(localized_route('thank-you'))->with('inquiry_id', $inquiry->id);
     }
 
     public function thankYou(): View

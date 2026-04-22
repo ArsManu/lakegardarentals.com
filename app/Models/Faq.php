@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasStoredTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class Faq extends Model
 {
     use HasFactory;
+    use HasStoredTranslations;
 
     protected $fillable = [
         'page_slug',
@@ -16,6 +18,7 @@ class Faq extends Model
         'answer',
         'sort_order',
         'is_active',
+        'translations',
     ];
 
     protected function casts(): array
@@ -23,6 +26,15 @@ class Faq extends Model
         return [
             'sort_order' => 'integer',
             'is_active' => 'boolean',
+            'translations' => 'array',
+        ];
+    }
+
+    protected function translatableFieldNames(): array
+    {
+        return [
+            'question',
+            'answer',
         ];
     }
 

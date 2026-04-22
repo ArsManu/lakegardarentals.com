@@ -15,11 +15,13 @@
     </div>
 </div>
 
-<form method="post" action="{{ route('admin.apartments.update', $apartment) }}" enctype="multipart/form-data" class="mt-8 max-w-4xl space-y-5">
+@include('admin.partials.translate-languages-form', ['type' => 'apartment', 'id' => $apartment->id])
+
+<form method="post" action="{{ route('admin.apartments.update', $apartment) }}" enctype="multipart/form-data" class="mt-8 max-w-4xl space-y-5" data-admin-dirty-form>
     @csrf
     @method('PUT')
     @include('admin.apartments._form', ['apartment' => $apartment, 'amenities' => $amenities])
-    <button type="submit" class="rounded-full bg-lake-900 px-6 py-2 text-sm font-semibold text-white">{{ __('Save') }}</button>
+    <button type="submit" class="js-primary-save rounded-full bg-lake-900 px-6 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">{{ __('Save') }}</button>
 </form>
 
 @include('admin.apartments._gallery', ['apartment' => $apartment])

@@ -6,7 +6,9 @@
 ])
 
 @php
+    use App\Support\HtmlTranslationSanity;
     $hasImage = ($imageSrc ?? '') !== '';
+    $safeSubtitle = HtmlTranslationSanity::toDisplayableHtml($subtitle ?? '');
 @endphp
 
 {{--
@@ -45,7 +47,7 @@
         <div class="w-full min-w-0">
             <nav class="text-sm" aria-label="{{ __('Breadcrumb') }}">
                 <a
-                    href="{{ route('home') }}"
+                    href="{{ localized_route('home') }}"
                     class="{{ $hasImage ? 'text-stone-200 hover:text-white' : 'text-stone-400 hover:text-white' }}"
                 >{{ __('Home') }}</a>
                 <span class="mx-2 {{ $hasImage ? 'text-stone-400' : 'text-stone-500' }}">/</span>
@@ -54,8 +56,8 @@
             <h1
                 class="mt-6 w-full max-w-none font-display text-5xl font-bold leading-[0.95] tracking-tight text-white drop-shadow-[0_12px_36px_rgba(0,0,0,0.5)] sm:text-6xl lg:text-7xl"
             >{{ $title }}</h1>
-            @if(($subtitle ?? '') !== '')
-                <div class="prose prose-invert prose-lg mt-5 w-full max-w-none text-white [&_*]:!text-white [&_a]:!text-white/95 prose-p:my-0 prose-p:leading-relaxed prose-a:underline-offset-2 drop-shadow-[0_6px_18px_rgba(0,0,0,0.4)] md:prose-xl">{!! $subtitle !!}</div>
+            @if($safeSubtitle !== '')
+                <div class="prose prose-invert prose-lg mt-5 w-full max-w-none text-white [&_*]:!text-white [&_a]:!text-white/95 prose-p:my-0 prose-p:leading-relaxed prose-a:underline-offset-2 drop-shadow-[0_6px_18px_rgba(0,0,0,0.4)] md:prose-xl">{!! $safeSubtitle !!}</div>
             @endif
         </div>
     </div>

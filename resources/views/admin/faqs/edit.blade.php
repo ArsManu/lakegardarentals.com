@@ -2,7 +2,8 @@
 @section('title', __('Edit FAQ'))
 @section('content')
 <h1 class="font-display text-2xl font-semibold">{{ __('Edit FAQ') }}</h1>
-<form method="post" action="{{ route('admin.faqs.update', $faq) }}" class="mt-8 max-w-2xl space-y-4">
+@include('admin.partials.translate-languages-form', ['type' => 'faq', 'id' => $faq->id])
+<form method="post" action="{{ route('admin.faqs.update', $faq) }}" class="mt-8 max-w-2xl space-y-4" data-admin-dirty-form>
     @csrf
     @method('PUT')
     <div>
@@ -28,7 +29,7 @@
         <input type="checkbox" name="is_active" value="1" id="is_active" @checked(old('is_active', $faq->is_active)) class="rounded border-stone-300">
         <label for="is_active">{{ __('Active') }}</label>
     </div>
-    <button type="submit" class="rounded-full bg-lake-900 px-6 py-2 text-sm text-white">{{ __('Save') }}</button>
+    <button type="submit" class="js-primary-save rounded-full bg-lake-900 px-6 py-2 text-sm text-white disabled:cursor-not-allowed disabled:opacity-50">{{ __('Save') }}</button>
 </form>
 <form method="post" action="{{ route('admin.faqs.destroy', $faq) }}" class="mt-8" onsubmit="return confirm('Delete?');">
     @csrf

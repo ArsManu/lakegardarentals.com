@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasStoredTranslations;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Apartment extends Model
 {
     use HasFactory;
+    use HasStoredTranslations;
 
     protected $fillable = [
         'name',
@@ -37,6 +39,7 @@ class Apartment extends Model
         'canonical_url',
         'og_title',
         'og_description',
+        'translations',
     ];
 
     protected function casts(): array
@@ -49,6 +52,25 @@ class Apartment extends Model
             'bathrooms' => 'integer',
             'size_m2' => 'integer',
             'sort_order' => 'integer',
+            'translations' => 'array',
+        ];
+    }
+
+    protected function translatableFieldNames(): array
+    {
+        return [
+            'name',
+            'short_description',
+            'full_description',
+            'ideal_for',
+            'location_text',
+            'check_in_out_note',
+            'availability_note',
+            'address',
+            'meta_title',
+            'meta_description',
+            'og_title',
+            'og_description',
         ];
     }
 
@@ -75,6 +97,20 @@ class Apartment extends Model
     public function inquiries(): HasMany
     {
         return $this->hasMany(Inquiry::class);
+    }
+
+    /** Apply stored translations to this row and to loaded amenities. */
+    public function withTranslatedAmenities(): static
+    {
+        $a = $this->displayForLocale();
+        if ($a->relationLoaded('amenities')) {
+            $a->setRelation(
+                'amenities',
+                $a->amenities->map(fn (Amenity $m) => $m->displayForLocale())
+            );
+        }
+
+        return $a;
     }
 
     public function coverImagePath(): ?string

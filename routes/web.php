@@ -1,21 +1,22 @@
 <?php
 
+use App\Http\Controllers\Admin\AccountSettingsController;
 use App\Http\Controllers\Admin\AmenityController;
 use App\Http\Controllers\Admin\ApartmentController as AdminApartmentController;
 use App\Http\Controllers\Admin\ApartmentImageController;
 use App\Http\Controllers\Admin\ApartmentSeasonController;
-use App\Http\Controllers\Admin\AccountSettingsController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\InquiryController as AdminInquiryController;
 use App\Http\Controllers\Admin\PageController as AdminPageController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\TriggerTranslationController;
 use App\Http\Controllers\ApartmentController;
 use App\Http\Controllers\InquiryController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RobotsController;
 use App\Http\Controllers\SitemapController;
-use App\Http\Controllers\ProfileController;
 use App\Models\Apartment;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -24,24 +25,38 @@ use Illuminate\Support\Facades\Route;
 Route::get('/robots.txt', RobotsController::class)->name('robots');
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 
-Route::get('/', [PageController::class, 'home'])->name('home');
-Route::get('/lake-garda', [PageController::class, 'lakeGarda'])->name('lake-garda');
-Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+$registerPublicSite = function (string $namePrefix, bool $localeInPath = false): void {
+    Route::get('/', [PageController::class, 'home'])->name($namePrefix.'home');
+    Route::get('/lake-garda', [PageController::class, 'lakeGarda'])->name($namePrefix.'lake-garda');
+    Route::get('/contact', [PageController::class, 'contact'])->name($namePrefix.'contact');
 
-Route::get('/apartments', [ApartmentController::class, 'index'])->name('apartments.index');
-Route::get('/apartments/{apartment:slug}', [ApartmentController::class, 'show'])->name('apartments.show');
+    Route::get('/apartments', [ApartmentController::class, 'index'])->name($namePrefix.'apartments.index');
+    Route::get(
+        '/apartments/{apartment:slug}',
+        [ApartmentController::class, $localeInPath ? 'showInLocale' : 'show']
+    )->name($namePrefix.'apartments.show');
 
-Route::post('/inquiry', [InquiryController::class, 'storeBooking'])
-    ->middleware('throttle:10,1')
-    ->name('inquiry.store');
+    Route::post('/inquiry', [InquiryController::class, 'storeBooking'])
+        ->middleware('throttle:10,1')
+        ->name($namePrefix.'inquiry.store');
 
-Route::post('/contact', [InquiryController::class, 'storeContact'])
-    ->middleware('throttle:10,1')
-    ->name('contact.store');
+    Route::post('/contact', [InquiryController::class, 'storeContact'])
+        ->middleware('throttle:10,1')
+        ->name($namePrefix.'contact.store');
 
-Route::get('/thank-you', [InquiryController::class, 'thankYou'])
-    ->middleware('noindex')
-    ->name('thank-you');
+    Route::get('/thank-you', [InquiryController::class, 'thankYou'])
+        ->middleware('noindex')
+        ->name($namePrefix.'thank-you');
+};
+
+$registerPublicSite('');
+
+Route::prefix('{locale}')
+    ->where(['locale' => 'de|it'])
+    ->middleware('locale')
+    ->group(function () use ($registerPublicSite): void {
+        $registerPublicSite('locale.', true);
+    });
 
 Route::middleware(['auth', 'noindex'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -89,6 +104,7 @@ Route::middleware(['auth', 'admin', 'noindex'])->prefix('admin')->name('admin.')
     Route::put('pages/{page:slug}/hero-slideshow', [AdminPageController::class, 'updateHeroSlideshow'])->name('pages.hero-slideshow.update');
     Route::get('pages/{page:slug}/edit', [AdminPageController::class, 'edit'])->name('pages.edit');
     Route::put('pages/{page:slug}', [AdminPageController::class, 'update'])->name('pages.update');
+    Route::post('translate', TriggerTranslationController::class)->name('translate');
     Route::resource('faqs', FaqController::class)->except(['show']);
     Route::resource('testimonials', TestimonialController::class)->except(['show']);
 });

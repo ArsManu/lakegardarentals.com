@@ -3,7 +3,7 @@
 @php
     $metaTitle = $apartment->meta_title ?? $apartment->name.' — '. __('Lake Garda apartment rental');
     $metaDesc = \App\Support\PlainText::fromHtml((string) ($apartment->meta_description ?? $apartment->short_description ?? ''));
-    $canonical = $apartment->canonical_url ?? route('apartments.show', $apartment);
+    $canonical = $apartment->canonical_url ?? localized_route('apartments.show', ['apartment' => $apartment]);
     $cover = $apartment->coverImagePath();
     $ogImage = $cover ? asset('storage/'.$cover) : null;
     $heroBgUrl = $cover ? asset('storage/'.$cover) : null;
@@ -56,7 +56,7 @@
     '@type' => 'VacationRental',
     'name' => $apartment->name,
     'description' => \App\Support\PlainText::fromHtml($apartment->short_description),
-    'url' => route('apartments.show', $apartment),
+    'url' => localized_route('apartments.show', ['apartment' => $apartment]),
     'image' => $apartment->images->map(fn ($i) => asset('storage/'.$i->path))->values()->all(),
     'occupancy' => [
         '@type' => 'QuantitativeValue',
@@ -77,9 +77,9 @@
     '@context' => 'https://schema.org',
     '@type' => 'BreadcrumbList',
     'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => __('Home'), 'item' => url('/')],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => __('Apartments'), 'item' => url('/apartments')],
-        ['@type' => 'ListItem', 'position' => 3, 'name' => $apartment->name, 'item' => route('apartments.show', $apartment)],
+        ['@type' => 'ListItem', 'position' => 1, 'name' => __('Home'), 'item' => localized_route('home')],
+        ['@type' => 'ListItem', 'position' => 2, 'name' => __('Apartments'), 'item' => localized_route('apartments.index')],
+        ['@type' => 'ListItem', 'position' => 3, 'name' => $apartment->name, 'item' => localized_route('apartments.show', ['apartment' => $apartment])],
     ],
 ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
 </script>
@@ -91,9 +91,9 @@
     <div class="border-b border-stone-200">
         <div class="mx-auto max-w-7xl px-4 pt-4 lg:px-8">
             <nav class="text-sm text-stone-500" aria-label="{{ __('Breadcrumb') }}">
-                <a href="{{ route('home') }}" class="hover:text-lake-800">{{ __('Home') }}</a>
+                <a href="{{ localized_route('home') }}" class="hover:text-lake-800">{{ __('Home') }}</a>
                 <span class="mx-1.5">/</span>
-                <a href="{{ route('apartments.index') }}" class="hover:text-lake-800">{{ __('Apartments') }}</a>
+                <a href="{{ localized_route('apartments.index') }}" class="hover:text-lake-800">{{ __('Apartments') }}</a>
                 <span class="mx-1.5">/</span>
                 <span class="text-stone-800">{{ $apartment->name }}</span>
             </nav>
@@ -372,7 +372,7 @@
                     @if($apartment->location_text)
                         <div class="prose prose-stone prose-sm mt-4 w-full min-w-0 max-w-full [overflow-wrap:anywhere] text-stone-700 prose-p:max-w-full [&_a]:break-words">{!! $apartment->location_text !!}</div>
                     @endif
-                    <a href="{{ route('lake-garda') }}" class="mt-4 inline-block text-sm font-semibold text-blue-600 hover:underline">{{ __('Explore Lake Garda') }} →</a>
+                    <a href="{{ localized_route('lake-garda') }}" class="mt-4 inline-block text-sm font-semibold text-blue-600 hover:underline">{{ __('Explore Lake Garda') }} →</a>
                 </section>
                 @endif
 
@@ -438,7 +438,7 @@
         <p class="mt-2 max-w-2xl text-sm text-stone-600">{{ __('No instant booking—send your dates and we will confirm availability personally.') }}</p>
         <div class="mt-8 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8 lg:p-10">
             <x-inquiry-form
-                :action-url="route('inquiry.store')"
+                :action-url="localized_route('inquiry.store')"
                 :apartments="$apartments"
                 :selected-apartment-id="$apartment->id"
                 :source-page="'apartment-'.$apartment->slug"

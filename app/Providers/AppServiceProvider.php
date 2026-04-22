@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Listeners\QueueTranslationOnModelSave;
 use App\Models\Faq;
 use App\Models\Page;
 use App\Models\Testimonial;
@@ -19,6 +20,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->app->make(QueueTranslationOnModelSave::class)->register();
+
         View::share('siteName', config('lakegarda.site_name'));
         View::share('sitePhone', config('lakegarda.phone_display'));
         View::share('sitePhoneTel', preg_replace('/\s+/', '', (string) config('lakegarda.phone')));
@@ -41,7 +44,8 @@ class AppServiceProvider extends ServiceProvider
             }
 
             $homePage = Page::query()->where('slug', 'home')->first();
-            $b = is_array($homePage?->blocks) ? $homePage->blocks : [];
+            $homeForView = $homePage?->displayForLocale();
+            $b = is_array($homeForView?->blocks) ? $homeForView->blocks : [];
             $ctaTitle = trim((string) ($b['cta_title'] ?? ''));
             $ctaText = trim((string) ($b['cta_text'] ?? ''));
             $heroSlides = is_array($b['hero_slides'] ?? null) ? $b['hero_slides'] : [];
@@ -55,7 +59,12 @@ class AppServiceProvider extends ServiceProvider
 
             $testimonials = collect();
             if (Schema::hasTable('testimonials')) {
-                $testimonials = Testimonial::query()->published()->orderBy('sort_order')->limit(4)->get();
+                $testimonials = Testimonial::query()
+                    ->published()
+                    ->orderBy('sort_order')
+                    ->limit(4)
+                    ->get()
+                    ->map(fn (Testimonial $t) => $t->displayForLocale());
             }
 
             $faqs = collect();
@@ -66,7 +75,8 @@ class AppServiceProvider extends ServiceProvider
                     ->orderByRaw("CASE COALESCE(page_slug, '') WHEN 'home' THEN 0 WHEN 'lake-garda' THEN 1 WHEN 'contact' THEN 2 ELSE 3 END")
                     ->orderBy('sort_order')
                     ->orderBy('id')
-                    ->get();
+                    ->get()
+                    ->map(fn (Faq $f) => $f->displayForLocale());
             }
 
             $view->with([
@@ -91,7 +101,11 @@ class AppServiceProvider extends ServiceProvider
             }
 
             $contactPage = Page::query()->where('slug', 'contact')->first();
-            if (! $contactPage || ! is_array($contactPage->blocks)) {
+            if (! $contactPage) {
+                return;
+            }
+            $contactPage = $contactPage->displayForLocale();
+            if (! is_array($contactPage->blocks)) {
                 return;
             }
 

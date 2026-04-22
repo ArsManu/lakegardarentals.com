@@ -6,7 +6,7 @@
     $headerHeroSrc = MediaUrl::public($b['hero_header_image_path'] ?? '');
     $metaTitle = $page->meta_title ?? __('Lake Garda & Garda — holiday guide');
     $metaDesc = $page->meta_description;
-    $canonical = $page->canonical_url ?? url('/lake-garda');
+    $canonical = $page->canonical_url ?? localized_route('lake-garda');
 @endphp
 
 @push('meta')

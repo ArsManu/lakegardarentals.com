@@ -63,7 +63,7 @@
                                     @csrf
                                     <button type="submit" class="rounded border border-stone-200 px-2 py-1 text-xs text-stone-700 hover:bg-stone-50">{{ __('Move down') }}</button>
                                 </form>
-                                <form method="post" action="{{ route('admin.apartments.images.destroy', [$apartment, $img]) }}" class="inline" onsubmit="return confirm(@json(__('Remove this image?')));">
+                                <form method="post" action="{{ route('admin.apartments.images.destroy', [$apartment, $img]) }}" class="inline" data-confirm-question="{{ e(__('Remove this image?')) }}" onsubmit="return window.confirm(this.getAttribute('data-confirm-question') || '');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="rounded border border-red-200 px-2 py-1 text-xs text-red-700 hover:bg-red-50">{{ __('Remove') }}</button>

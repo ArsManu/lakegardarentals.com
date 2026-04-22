@@ -94,7 +94,7 @@
                 <div class="mt-4 max-w-none text-lg text-white drop-shadow-sm [&_p]:m-0 [&_p+p]:mt-3 [&_*]:!text-white">{!! $preFooterCtaText !!}</div>
                 <div class="mt-8 flex flex-wrap justify-center gap-4">
                     <a href="tel:{{ $sitePhoneTel }}" class="inline-flex items-center justify-center rounded-full bg-white px-8 py-5 text-base font-semibold leading-none text-lake-900 shadow-lg">{{ __('Call') }}</a>
-                    <a href="{{ route('contact') }}#inquiry" class="inline-flex items-center justify-center rounded-full border-2 border-white px-8 py-5 text-base font-semibold leading-none text-white shadow-sm">{{ __('Email your dates') }}</a>
+                    <a href="{{ localized_route('contact') }}#inquiry" class="inline-flex items-center justify-center rounded-full border-2 border-white px-8 py-5 text-base font-semibold leading-none text-white shadow-sm">{{ __('Email your dates') }}</a>
                 </div>
             </div>
         </div>

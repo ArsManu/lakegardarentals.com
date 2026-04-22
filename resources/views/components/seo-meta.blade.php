@@ -6,6 +6,7 @@
     'ogDescription' => null,
     'ogImage' => null,
     'noindex' => false,
+    'hreflangUrls' => null,
 ])
 
 <title>{{ $title }} — {{ $siteName }}</title>
@@ -19,6 +20,13 @@
 @endif
 @if($canonical)
 <link rel="canonical" href="{{ $canonical }}">
+@endif
+@if (! $noindex)
+@foreach(($hreflangUrls ?? localized_hreflang_urls()) as $lang => $hUrl)
+    @if($hUrl)
+        <link rel="alternate" hreflang="{{ $lang === 'x-default' ? 'x-default' : $lang }}" href="{{ $hUrl }}">
+    @endif
+@endforeach
 @endif
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="{{ $siteName }}">

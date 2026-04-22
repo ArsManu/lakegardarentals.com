@@ -1,6 +1,7 @@
 @php
+    $localeAlts = localized_alternates();
     // Home: transparent header over the hero until scroll. All other pages: solid white bar by default.
-    $headerSolid = $headerSolid ?? ! request()->routeIs('home');
+    $headerSolid = $headerSolid ?? ! localized_route_is('home');
     $wa = $siteWhatsapp ?? null;
     $waNumber = $wa ?: ($sitePhoneTel ?? null);
     $waUrl = $waNumber ? 'https://wa.me/'.preg_replace('/\D/', '', $waNumber) : null;
@@ -25,7 +26,7 @@
     <div class="relative mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-6 sm:py-[1.125rem] lg:gap-8 lg:px-8 lg:py-5">
         {{-- Logo lockup (footer style) --}}
         <a
-            href="{{ route('home') }}"
+            href="{{ localized_route('home') }}"
             class="group relative shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/50 focus-visible:ring-offset-2"
             :class="scrolled ? 'focus-visible:ring-offset-white' : 'focus-visible:ring-offset-transparent'"
         >
@@ -48,14 +49,22 @@
         {{-- Desktop nav --}}
         <nav class="hidden items-center gap-0.5 lg:flex lg:gap-1" aria-label="{{ __('Primary') }}">
             @foreach ([
-                ['route' => 'home', 'label' => __('Home'), 'match' => ['home']],
-                ['route' => 'lake-garda', 'label' => __('Lake Garda'), 'match' => ['lake-garda']],
-                ['route' => 'apartments.index', 'label' => __('Apartments'), 'match' => ['apartments.index', 'apartments.show']],
-                ['route' => 'contact', 'label' => __('Contact'), 'match' => ['contact']],
+                ['route' => 'home', 'label' => __('Home')],
+                ['route' => 'lake-garda', 'label' => __('Lake Garda')],
+                ['route' => 'apartments.index', 'label' => __('Apartments')],
+                ['route' => 'contact', 'label' => __('Contact')],
             ] as $item)
-                @php $active = request()->routeIs(...$item['match']); @endphp
+                @php
+                    $active = match ($item['route']) {
+                        'home' => localized_route_is('home'),
+                        'lake-garda' => localized_route_is('lake-garda'),
+                        'apartments.index' => localized_route_is_any(['apartments.index', 'apartments.show']),
+                        'contact' => localized_route_is('contact'),
+                        default => false,
+                    };
+                @endphp
                 <a
-                    href="{{ route($item['route']) }}"
+                    href="{{ localized_route($item['route']) }}"
                     class="group relative rounded-lg px-3.5 py-2 text-sm font-semibold uppercase tracking-[0.12em] transition-colors lg:text-[0.9375rem] lg:tracking-[0.11em]"
                     :class="scrolled
                         ? 'text-lake-950 {{ $active ? '' : 'hover:bg-black/[0.06]' }}'
@@ -66,6 +75,24 @@
                         <span class="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-gradient-to-r from-gold-500 to-gold-500/40" aria-hidden="true"></span>
                     @endif
                 </a>
+            @endforeach
+        </nav>
+
+        <nav
+            class="hidden min-w-0 items-center justify-center gap-0.5 rounded-lg border p-0.5 text-xs font-bold uppercase leading-none sm:flex"
+            :class="scrolled ? 'border-stone-200/90 bg-stone-50' : 'border-white/20 bg-white/5'"
+            aria-label="{{ __('Language') }}"
+        >
+            @foreach (config('locales.supported', ['en', 'de', 'it']) as $loc)
+                @php $isLoc = (string) app()->getLocale() === $loc; @endphp
+                <a
+                    href="{{ $localeAlts[$loc] ?? url('/') }}"
+                    @class(['rounded-md px-2.5 py-1.5 transition', 'shrink-0'])
+                    :class="scrolled
+                        ? '{{ $isLoc ? 'bg-lake-900 text-white shadow-sm' : 'text-lake-900 hover:bg-stone-100' }}'
+                        : '{{ $isLoc ? 'bg-white/20 text-white' : 'text-white/90 hover:bg-white/10' }}'"
+                    @if($isLoc) aria-current="true" @endif
+                >{{ strtoupper($loc) }}</a>
             @endforeach
         </nav>
 
@@ -160,16 +187,42 @@
         class="relative border-t lg:hidden"
         :class="scrolled ? 'border-stone-200 bg-white' : 'border-white/10 bg-lake-950/98 backdrop-blur-xl'"
     >
-        <nav class="mx-auto flex max-w-7xl flex-col gap-0.5 px-4 py-4 sm:px-6" aria-label="{{ __('Primary') }}">
+        <div class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6" aria-label="{{ __('Primary') }}">
+            <nav
+                class="flex w-full max-w-sm flex-wrap items-center gap-0.5 rounded-lg border p-0.5 text-xs font-bold uppercase"
+                :class="scrolled ? 'border-stone-200/90 bg-stone-50' : 'border-white/20 bg-lake-900/40'"
+                aria-label="{{ __('Language') }}"
+            >
+                @foreach (config('locales.supported', ['en', 'de', 'it']) as $loc)
+                    @php $isLoc = (string) app()->getLocale() === $loc; @endphp
+                    <a
+                        href="{{ $localeAlts[$loc] ?? url('/') }}"
+                        @click="mobileOpen = false"
+                        class="shrink-0 rounded-md px-2.5 py-1.5 transition"
+                        :class="scrolled
+                            ? '{{ $isLoc ? 'bg-lake-900 text-white shadow-sm' : 'text-lake-900 hover:bg-stone-100' }}'
+                            : '{{ $isLoc ? 'bg-white/20 text-white' : 'text-white/90 hover:bg-white/10' }}'"
+                    >{{ strtoupper($loc) }}</a>
+                @endforeach
+            </nav>
+            <nav class="flex flex-col gap-0.5" aria-label="{{ __('Primary') }}">
             @foreach ([
-                ['route' => 'home', 'label' => __('Home'), 'match' => ['home']],
-                ['route' => 'lake-garda', 'label' => __('Lake Garda'), 'match' => ['lake-garda']],
-                ['route' => 'apartments.index', 'label' => __('Apartments'), 'match' => ['apartments.index', 'apartments.show']],
-                ['route' => 'contact', 'label' => __('Contact'), 'match' => ['contact']],
+                ['route' => 'home', 'label' => __('Home')],
+                ['route' => 'lake-garda', 'label' => __('Lake Garda')],
+                ['route' => 'apartments.index', 'label' => __('Apartments')],
+                ['route' => 'contact', 'label' => __('Contact')],
             ] as $item)
-                @php $active = request()->routeIs(...$item['match']); @endphp
+                @php
+                    $active = match ($item['route']) {
+                        'home' => localized_route_is('home'),
+                        'lake-garda' => localized_route_is('lake-garda'),
+                        'apartments.index' => localized_route_is_any(['apartments.index', 'apartments.show']),
+                        'contact' => localized_route_is('contact'),
+                        default => false,
+                    };
+                @endphp
                 <a
-                    href="{{ route($item['route']) }}"
+                    href="{{ localized_route($item['route']) }}"
                     @click="mobileOpen = false"
                     class="rounded-xl px-4 py-3.5 text-base font-semibold uppercase tracking-[0.12em] transition"
                     :class="scrolled
@@ -177,6 +230,7 @@
                         : '{{ $active ? 'bg-white/15 text-white' : 'text-white hover:bg-white/10' }}'"
                 >{{ $item['label'] }}</a>
             @endforeach
-        </nav>
+            </nav>
+        </div>
     </div>
 </header>

@@ -16,7 +16,7 @@
     $ctaText = $b['cta_text'] ?? '';
     $metaTitle = $page->meta_title ?? $page->title;
     $metaDesc = $page->meta_description;
-    $canonical = $page->canonical_url ?? url('/');
+    $canonical = $page->canonical_url ?? localized_route('home');
     $showHero = false;
     foreach ($heroSlides as $slide) {
         if (is_array($slide) && ($slide['image_path'] ?? '') !== '') {
@@ -42,7 +42,7 @@
     '@context' => 'https://schema.org',
     '@type' => 'Organization',
     'name' => $siteName,
-    'url' => url('/'),
+    'url' => localized_route('home'),
     'telephone' => $sitePhone,
     'email' => $siteEmail,
     'address' => [
@@ -58,10 +58,10 @@
     '@context' => 'https://schema.org',
     '@type' => 'WebSite',
     'name' => $siteName,
-    'url' => url('/'),
+    'url' => localized_route('home'),
     'potentialAction' => [
         '@type' => 'SearchAction',
-        'target' => url('/apartments'),
+        'target' => localized_route('apartments.index'),
         'query-input' => 'required name=search_term_string',
     ],
 ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}

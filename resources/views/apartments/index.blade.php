@@ -6,7 +6,7 @@
     $headerHeroSrc = MediaUrl::public($b['hero_header_image_path'] ?? '');
     $metaTitle = $page?->meta_title ?? __('Lake Garda apartments in Garda');
     $metaDesc = $page?->meta_description ?? __('Compare our two holiday apartments in Garda on Lake Garda. Direct booking inquiries, clear pricing, and fast host responses.');
-    $canonical = $page?->canonical_url ?? url('/apartments');
+    $canonical = $page?->canonical_url ?? localized_route('apartments.index');
 @endphp
 
 @push('meta')

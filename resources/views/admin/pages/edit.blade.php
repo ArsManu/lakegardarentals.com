@@ -5,7 +5,9 @@
 @section('content')
 <h1 class="font-display text-2xl font-semibold text-lake-950">{{ __('Edit page: :slug', ['slug' => $page->slug]) }}</h1>
 
-<form method="post" action="{{ route('admin.pages.update', $page) }}" enctype="multipart/form-data" class="mt-8 max-w-4xl space-y-6">
+@include('admin.partials.translate-languages-form', ['type' => 'page', 'id' => $page->id])
+
+<form method="post" action="{{ route('admin.pages.update', $page) }}" enctype="multipart/form-data" class="mt-8 max-w-4xl space-y-6" data-admin-dirty-form>
     @csrf
     @method('PUT')
     @if($errors->any())
@@ -45,6 +47,6 @@
 
     @includeWhen(view()->exists('admin.pages.blocks-'.$page->slug), 'admin.pages.blocks-'.$page->slug, ['blocks' => $blocks ?? [], 'page' => $page])
 
-    <button type="submit" class="rounded-full bg-lake-900 px-6 py-2 text-sm font-semibold text-white">{{ __('Save') }}</button>
+    <button type="submit" class="js-primary-save rounded-full bg-lake-900 px-6 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">{{ __('Save') }}</button>
 </form>
 @endsection

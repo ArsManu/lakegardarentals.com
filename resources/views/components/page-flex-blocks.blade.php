@@ -4,6 +4,7 @@
 ])
 
 @php
+    use App\Support\HtmlTranslationSanity;
     use App\Support\MediaUrl;
     $list = is_array($blocks) ? $blocks : [];
     $flexSectionHeadingClass = 'font-display text-3xl font-semibold tracking-tight text-lake-950 md:text-4xl';
@@ -24,6 +25,7 @@
                         $alt = $block['image_alt'] ?? '';
                         $heading = $block['heading'] ?? '';
                         $body = str_replace(["\u{00A0}", '&nbsp;', '&#160;'], ' ', $block['body_html'] ?? '');
+                        $body = HtmlTranslationSanity::toDisplayableHtml($body);
                     @endphp
                     @if($img !== '' || $heading !== '' || $body !== '')
                         <div class="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
@@ -86,6 +88,7 @@
                 @case('rich_text')
                     @php
                         $html = str_replace(["\u{00A0}", '&nbsp;', '&#160;'], ' ', $block['html'] ?? '');
+                        $html = HtmlTranslationSanity::toDisplayableHtml($html);
                         $richHeading = trim((string) ($block['heading'] ?? ''));
                     @endphp
                     @if($richHeading !== '' || $html !== '')

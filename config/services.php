@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'openai' => [
+        'key' => env('OPENAI_API_KEY'),
+        'model' => env('OPENAI_TRANSLATION_MODEL', 'gpt-5.4-mini'),
+        'base_url' => rtrim((string) env('OPENAI_BASE_URL', 'https://api.openai.com/v1'), '/'),
+        'request_timeout' => (int) env('OPENAI_REQUEST_TIMEOUT', 300),
+    ],
+
 ];
