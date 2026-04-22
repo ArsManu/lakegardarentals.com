@@ -1,5 +1,4 @@
 @php
-    $localeAlts = localized_alternates();
     // Home: transparent header over the hero until scroll. All other pages: solid white bar by default.
     $headerSolid = $headerSolid ?? ! localized_route_is('home');
     $wa = $siteWhatsapp ?? null;
@@ -18,7 +17,7 @@
 @endphp
 <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:p-4 focus:bg-white focus:text-lake-900">{{ __('Skip to content') }}</a>
 <header
-    x-data="{ scrolled: @json($headerSolid), forceSolid: @json($headerSolid), mobileOpen: false }"
+    x-data="{ scrolled: @json($headerSolid), forceSolid: @json($headerSolid), mobileOpen: false, langOpenBar: false, langOpenDrawer: false }"
     @scroll.window="if (!forceSolid) scrolled = window.scrollY > 12"
     class="fixed left-0 right-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-300 ease-out {{ $headerSolid ? 'bg-white shadow-sm backdrop-blur-none' : '' }}"
     :class="scrolled ? 'bg-white shadow-sm backdrop-blur-none' : 'bg-lake-950/40 backdrop-blur-xl'"
@@ -78,23 +77,7 @@
             @endforeach
         </nav>
 
-        <nav
-            class="hidden min-w-0 items-center justify-center gap-0.5 rounded-lg border p-0.5 text-xs font-bold uppercase leading-none sm:flex"
-            :class="scrolled ? 'border-stone-200/90 bg-stone-50' : 'border-white/20 bg-white/5'"
-            aria-label="{{ __('Language') }}"
-        >
-            @foreach (config('locales.supported', ['en', 'de', 'it']) as $loc)
-                @php $isLoc = (string) app()->getLocale() === $loc; @endphp
-                <a
-                    href="{{ $localeAlts[$loc] ?? url('/') }}"
-                    @class(['rounded-md px-2.5 py-1.5 transition', 'shrink-0'])
-                    :class="scrolled
-                        ? '{{ $isLoc ? 'bg-lake-900 text-white shadow-sm' : 'text-lake-900 hover:bg-stone-100' }}'
-                        : '{{ $isLoc ? 'bg-white/20 text-white' : 'text-white/90 hover:bg-white/10' }}'"
-                    @if($isLoc) aria-current="true" @endif
-                >{{ strtoupper($loc) }}</a>
-            @endforeach
-        </nav>
+        <x-site-language-select variant="bar" />
 
         {{-- CTAs --}}
         <div class="flex items-center gap-1.5 sm:gap-2">
@@ -188,23 +171,7 @@
         :class="scrolled ? 'border-stone-200 bg-white' : 'border-white/10 bg-lake-950/98 backdrop-blur-xl'"
     >
         <div class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6" aria-label="{{ __('Primary') }}">
-            <nav
-                class="flex w-full max-w-sm flex-wrap items-center gap-0.5 rounded-lg border p-0.5 text-xs font-bold uppercase"
-                :class="scrolled ? 'border-stone-200/90 bg-stone-50' : 'border-white/20 bg-lake-900/40'"
-                aria-label="{{ __('Language') }}"
-            >
-                @foreach (config('locales.supported', ['en', 'de', 'it']) as $loc)
-                    @php $isLoc = (string) app()->getLocale() === $loc; @endphp
-                    <a
-                        href="{{ $localeAlts[$loc] ?? url('/') }}"
-                        @click="mobileOpen = false"
-                        class="shrink-0 rounded-md px-2.5 py-1.5 transition"
-                        :class="scrolled
-                            ? '{{ $isLoc ? 'bg-lake-900 text-white shadow-sm' : 'text-lake-900 hover:bg-stone-100' }}'
-                            : '{{ $isLoc ? 'bg-white/20 text-white' : 'text-white/90 hover:bg-white/10' }}'"
-                    >{{ strtoupper($loc) }}</a>
-                @endforeach
-            </nav>
+            <x-site-language-select variant="drawer" />
             <nav class="flex flex-col gap-0.5" aria-label="{{ __('Primary') }}">
             @foreach ([
                 ['route' => 'home', 'label' => __('Home')],

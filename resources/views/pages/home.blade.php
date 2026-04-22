@@ -1,6 +1,7 @@
 @extends('layouts.site')
 
 @php
+    use App\Support\HtmlTranslationSanity;
     use App\Support\MediaUrl;
     $b = $page->blocks ?? [];
     $heroSlides = is_array($b['hero_slides'] ?? null) ? $b['hero_slides'] : [];
@@ -116,7 +117,7 @@
             @foreach($why as $item)
                 <div class="min-w-0 rounded-2xl bg-white p-6 shadow-lg md:p-7">
                     <h3 class="font-display text-xl font-semibold tracking-tight text-lake-950 md:text-2xl">{{ $item['title'] ?? '' }}</h3>
-                    <div class="prose prose-stone prose-sm mt-3 max-w-none break-words text-stone-600 prose-p:my-1 [&_p]:break-words">{!! $item['text'] ?? '' !!}</div>
+                    <div class="prose prose-stone prose-sm mt-3 max-w-none break-words text-stone-600 prose-p:my-1 [&_p]:break-words">{!! HtmlTranslationSanity::toDisplayableHtml((string) ($item['text'] ?? '')) !!}</div>
                 </div>
             @endforeach
         </div>

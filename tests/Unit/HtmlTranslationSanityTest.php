@@ -30,4 +30,12 @@ class HtmlTranslationSanityTest extends TestCase
         $html = '<p>Hello<\/span><\/p>';
         $this->assertSame('<p>Hello</span></p>', HtmlTranslationSanity::stripLlmJsonEscapesFromHtml($html));
     }
+
+    public function test_to_displayable_html_fixes_escaped_closers_and_marks_bold_artifacts_from_llm(): void
+    {
+        $html = '<p>Teilen Sie uns Ihre Reisedaten mit und wir melden uns schnell bei Ihnen.</p><p>Optionen.**<\/span><\/p>**';
+        $out = HtmlTranslationSanity::toDisplayableHtml($html);
+        $this->assertStringNotContainsString('\\/', $out);
+        $this->assertStringNotContainsString('**</', $out, 'markdown-style wrappers around spurious closings should not appear in output');
+    }
 }

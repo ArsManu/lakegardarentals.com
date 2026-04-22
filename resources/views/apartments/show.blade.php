@@ -1,6 +1,7 @@
 @extends('layouts.site')
 
 @php
+    use App\Support\HtmlTranslationSanity;
     $rentalSuffix = __('Lake Garda apartment rental');
     $metaTitle = filled($apartment->meta_title)
         ? trans_page_string($apartment->meta_title, '')
@@ -45,6 +46,10 @@
     // z≈11–12 shows town + Lake Garda context; 15 was too tight (mostly streets).
     $mapEmbedFromAddressUrl = 'https://maps.google.com/maps?q='.rawurlencode($addressLine).'&z=11&output=embed&hl='.rawurlencode(str_replace('_', '-', app()->getLocale()));
     $galleryCount = $galleryImages->count();
+    $fullDescriptionHtml = HtmlTranslationSanity::toDisplayableHtml((string) $apartment->full_description);
+    $availabilityNoteHtml = HtmlTranslationSanity::toDisplayableHtml((string) $apartment->availability_note);
+    $locationTextHtml = HtmlTranslationSanity::toDisplayableHtml((string) $apartment->location_text);
+    $checkInOutNoteHtml = HtmlTranslationSanity::toDisplayableHtml((string) $apartment->check_in_out_note);
 @endphp
 
 @push('meta')
@@ -339,7 +344,7 @@
                         <p class="mt-2 text-sm font-medium text-olive-800">{{ __('Ideal for:') }} {{ $apartment->ideal_for }}</p>
                     @endif
                     {{-- Quill HTML: wrap long lines / URLs; prose styles headings, strong, lists --}}
-                    <div class="prose prose-stone prose-base mt-6 w-full min-w-0 max-w-full [overflow-wrap:anywhere] prose-headings:font-semibold prose-headings:leading-snug prose-strong:font-semibold prose-strong:text-stone-900 prose-a:break-words prose-a:text-lake-800 prose-a:font-medium prose-p:my-2 prose-p:max-w-full prose-p:text-[15px] prose-p:leading-snug prose-li:max-w-full prose-li:text-[15px] prose-li:leading-snug [&_iframe]:max-w-full [&_img]:h-auto [&_img]:max-w-full [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_pre]:break-all [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto">{!! $apartment->full_description !!}</div>
+                    <div class="prose prose-stone prose-base mt-6 w-full min-w-0 max-w-full [overflow-wrap:anywhere] prose-headings:font-semibold prose-headings:leading-snug prose-strong:font-semibold prose-strong:text-stone-900 prose-a:break-words prose-a:text-lake-800 prose-a:font-medium prose-p:my-2 prose-p:max-w-full prose-p:text-[15px] prose-p:leading-snug prose-li:max-w-full prose-li:text-[15px] prose-li:leading-snug [&_iframe]:max-w-full [&_img]:h-auto [&_img]:max-w-full [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_pre]:break-all [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto">{!! $fullDescriptionHtml !!}</div>
                 </section>
 
                 <section class="mt-12 border-t border-stone-200 pt-10">
@@ -368,7 +373,7 @@
                         </div>
                     @endif
                     @if($apartment->availability_note)
-                        <div class="prose prose-stone prose-sm mt-6 w-full min-w-0 max-w-full [overflow-wrap:anywhere] rounded-xl bg-amber-50 p-4 text-amber-950 prose-p:my-1 prose-p:max-w-full [&_a]:break-words [&_a]:text-amber-900">{!! $apartment->availability_note !!}</div>
+                        <div class="prose prose-stone prose-sm mt-6 w-full min-w-0 max-w-full [overflow-wrap:anywhere] rounded-xl bg-amber-50 p-4 text-amber-950 prose-p:my-1 prose-p:max-w-full [&_a]:break-words [&_a]:text-amber-900">{!! $availabilityNoteHtml !!}</div>
                     @endif
                 </section>
 
@@ -379,7 +384,7 @@
                         <p class="mt-4 text-base font-medium text-stone-900">{{ $apartment->address }}</p>
                     @endif
                     @if($apartment->location_text)
-                        <div class="prose prose-stone prose-sm mt-4 w-full min-w-0 max-w-full [overflow-wrap:anywhere] text-stone-700 prose-p:max-w-full [&_a]:break-words">{!! $apartment->location_text !!}</div>
+                        <div class="prose prose-stone prose-sm mt-4 w-full min-w-0 max-w-full [overflow-wrap:anywhere] text-stone-700 prose-p:max-w-full [&_a]:break-words">{!! $locationTextHtml !!}</div>
                     @endif
                     <a href="{{ localized_route('lake-garda') }}" class="mt-4 inline-block text-sm font-semibold text-blue-600 hover:underline">{{ __('Explore Lake Garda') }} →</a>
                 </section>
@@ -388,7 +393,7 @@
                 @if($apartment->check_in_out_note)
                 <section class="mt-10 border-t border-stone-200 pt-10">
                     <h2 class="font-display text-xl font-semibold text-stone-900">{{ __('Check-in & check-out') }}</h2>
-                    <div class="prose prose-stone prose-sm mt-2 w-full min-w-0 max-w-full [overflow-wrap:anywhere] text-stone-600 prose-p:max-w-full [&_a]:break-words">{!! $apartment->check_in_out_note !!}</div>
+                    <div class="prose prose-stone prose-sm mt-2 w-full min-w-0 max-w-full [overflow-wrap:anywhere] text-stone-600 prose-p:max-w-full [&_a]:break-words">{!! $checkInOutNoteHtml !!}</div>
                 </section>
                 @endif
 

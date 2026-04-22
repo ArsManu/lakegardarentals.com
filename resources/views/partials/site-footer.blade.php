@@ -4,15 +4,19 @@
 @endphp
 <footer class="relative border-t border-stone-200/90 bg-white text-stone-700">
     <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
-        @unless(request()->routeIs('contact'))
+        @unless(localized_route_is('contact'))
         <div class="grid gap-12 sm:gap-14 lg:grid-cols-12 lg:gap-12">
             {{-- Brand --}}
-            <div class="lg:col-span-4">
+            <div class="flex flex-col lg:col-span-4">
                 <a href="{{ localized_route('home') }}" class="group inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white">
                     <p class="font-display text-2xl font-semibold tracking-tight text-lake-950 transition group-hover:text-lake-900 sm:text-3xl">{{ $siteName }}</p>
                     <span class="mt-3 block h-px w-12 bg-gradient-to-r from-gold-500 to-gold-500/30 transition-all duration-300 group-hover:w-16" aria-hidden="true"></span>
                 </a>
                 <p class="mt-5 max-w-md text-base leading-relaxed text-stone-600">{{ __('Direct booking holiday apartments in Garda on Lake Garda, Italy. Personal hosting and fast responses.') }}</p>
+                <div class="mt-8 w-full min-w-0 self-start sm:max-w-xs">
+                    <p class="mb-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-gold-600">{{ __('Language') }}</p>
+                    <x-site-language-select variant="footer" />
+                </div>
             </div>
 
             {{-- Contact --}}
@@ -76,7 +80,7 @@
 
         <div @class([
             'flex flex-col items-center justify-between gap-4 border-t border-stone-200 pt-10 sm:flex-row sm:items-center',
-            'mt-14' => ! request()->routeIs('contact'),
+            'mt-14' => ! localized_route_is('contact'),
         ])>
             <p class="text-center text-sm text-stone-500 sm:text-left">
                 &copy; {{ date('Y') }} {{ $siteName }}. {{ __('All rights reserved.') }}

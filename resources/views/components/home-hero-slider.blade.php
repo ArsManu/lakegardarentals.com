@@ -3,6 +3,7 @@
 ])
 
 @php
+    use App\Support\HtmlTranslationSanity;
     use App\Support\MediaUrl;
 
     /** @var array<int, mixed> $allSlides */
@@ -71,7 +72,7 @@
                         $slideSrc = MediaUrl::public($slide['image_path'] ?? '');
                         $eyebrow = $fieldOrFirst($slotIndex, $slide, $firstSlide, 'eyebrow');
                         $title = $fieldOrFirst($slotIndex, $slide, $firstSlide, 'title');
-                        $subtitle = $htmlOrFirst($slotIndex, $slide, $firstSlide, 'subtitle');
+                        $subtitle = HtmlTranslationSanity::toDisplayableHtml($htmlOrFirst($slotIndex, $slide, $firstSlide, 'subtitle'));
                         [$primaryLabel, $primaryUrl] = $ctaOrFirst($slotIndex, $slide, $firstSlide, 'primary_cta_label', 'primary_cta_url');
                         [$secondaryLabel, $secondaryUrl] = $ctaOrFirst($slotIndex, $slide, $firstSlide, 'secondary_cta_label', 'secondary_cta_url');
                         $imageAlt = ($slide['image_alt'] ?? '') !== '' ? $slide['image_alt'] : $title;

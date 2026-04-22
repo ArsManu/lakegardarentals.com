@@ -44,6 +44,8 @@ final class HtmlTranslationSanity
             return $html;
         }
         $plain = trim(preg_replace('/\s+/u', ' ', strip_tags($html)) ?? '');
+        $plain = trim(preg_replace('/\*+$/u', '', $plain) ?? $plain);
+        $plain = trim($plain, " \t\n\r\0\x0B*");
 
         return $plain === '' ? '' : '<p>'.htmlspecialchars($plain, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8').'</p>';
     }
@@ -57,6 +59,7 @@ final class HtmlTranslationSanity
         if ($html === '' || ! str_contains($html, '\\')) {
             return $html;
         }
+        // JSON-escaped closers like <\/span> become visible as text in the browser if not normalized.
         $html = str_replace('\/', '/', $html);
         $html = str_replace(['\\<', '\\>'], ['<', '>'], $html);
 

@@ -1,3 +1,6 @@
+@php
+    use App\Support\HtmlTranslationSanity;
+@endphp
 {{-- Same blocks as homepage: testimonials, home FAQs accordion, travel-dates CTA (driven by Home page CMS) --}}
 <section class="border-t border-stone-200/60 bg-white py-12 md:py-16">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -9,7 +12,7 @@
                 <div class="@if($preFooterFaqs->isNotEmpty()) mt-8 space-y-6 lg:mt-10 @else mt-12 grid gap-6 md:grid-cols-2 md:gap-8 @endif">
                     @foreach($preFooterTestimonials as $t)
                         <blockquote class="relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-8 pl-7 before:absolute before:inset-y-6 before:left-0 before:w-1 before:rounded-full before:bg-gradient-to-b before:from-gold-500 before:to-gold-600/70 before:content-[''] md:p-9 md:pl-8 md:before:inset-y-8">
-                            <div class="prose prose-stone prose-lg max-w-none text-stone-800 prose-p:leading-relaxed">{!! $t->quote !!}</div>
+                            <div class="prose prose-stone prose-lg max-w-none text-stone-800 prose-p:leading-relaxed">{!! HtmlTranslationSanity::toDisplayableHtml($t->quote) !!}</div>
                             <footer class="mt-6 border-t border-stone-100 pt-5 text-sm font-semibold text-lake-950">{{ $t->author_name }}@if($t->author_location)<span class="font-normal text-stone-500"> — {{ $t->author_location }}</span>@endif</footer>
                         </blockquote>
                     @endforeach
@@ -65,7 +68,7 @@
                                     class="border-t border-stone-100 bg-white px-5 py-5 sm:px-6"
                                 >
                                     <div class="prose prose-stone prose-sm max-w-none text-stone-600 prose-p:my-2 prose-a:font-medium prose-a:text-lake-800 prose-a:underline-offset-2 hover:prose-a:text-lake-950">
-                                        {!! $faq->answer !!}
+                                        {!! HtmlTranslationSanity::toDisplayableHtml($faq->answer) !!}
                                     </div>
                                 </div>
                             </div>

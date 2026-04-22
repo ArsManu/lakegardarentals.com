@@ -6,6 +6,7 @@ use App\Listeners\QueueTranslationOnModelSave;
 use App\Models\Faq;
 use App\Models\Page;
 use App\Models\Testimonial;
+use App\Support\HtmlTranslationSanity;
 use App\Support\MediaUrl;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -84,8 +85,8 @@ class AppServiceProvider extends ServiceProvider
             $view->with([
                 'preFooterTestimonials' => $testimonials,
                 'preFooterFaqs' => $faqs,
-                'preFooterCtaTitle' => $ctaTitle,
-                'preFooterCtaText' => $ctaText,
+                'preFooterCtaTitle' => trim(strip_tags(HtmlTranslationSanity::stripLlmJsonEscapesFromHtml($ctaTitle))),
+                'preFooterCtaText' => HtmlTranslationSanity::toDisplayableHtml($ctaText),
                 'preFooterCtaBgSrc' => $bgSrc,
             ]);
         });
