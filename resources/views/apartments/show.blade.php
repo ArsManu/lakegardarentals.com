@@ -1,8 +1,17 @@
 @extends('layouts.site')
 
 @php
-    $metaTitle = $apartment->meta_title ?? $apartment->name.' — '. __('Lake Garda apartment rental');
-    $metaDesc = \App\Support\PlainText::fromHtml((string) ($apartment->meta_description ?? $apartment->short_description ?? ''));
+    $rentalSuffix = __('Lake Garda apartment rental');
+    $metaTitle = filled($apartment->meta_title)
+        ? trans_page_string($apartment->meta_title, '')
+        : $apartment->name.' — '.$rentalSuffix;
+    $rawMetaDesc = (string) ($apartment->meta_description ?? $apartment->short_description ?? '');
+    $metaDesc = \App\Support\PlainText::fromHtml($rawMetaDesc);
+    if ($metaDesc !== '') {
+        $metaDesc = trans_page_string($metaDesc, '');
+    }
+    $ogTitle = filled($apartment->og_title) ? trans_page_string($apartment->og_title, '') : null;
+    $ogDesc = filled($apartment->og_description) ? trans_page_string($apartment->og_description, '') : null;
     $canonical = $apartment->canonical_url ?? localized_route('apartments.show', ['apartment' => $apartment]);
     $cover = $apartment->coverImagePath();
     $ogImage = $cover ? asset('storage/'.$cover) : null;
@@ -43,8 +52,8 @@
     :title="$metaTitle"
     :description="$metaDesc"
     :canonical="$canonical"
-    :og-title="$apartment->og_title ?? $metaTitle"
-    :og-description="$apartment->og_description ?? $metaDesc"
+    :og-title="$ogTitle ?? $metaTitle"
+    :og-description="$ogDesc ?? $metaDesc"
     :og-image="$ogImage"
 />
 @endpush

@@ -4,20 +4,27 @@
     use App\Support\MediaUrl;
     $b = $page->blocks ?? [];
     $headerHeroSrc = MediaUrl::public($b['hero_header_image_path'] ?? '');
-    $metaTitle = $page->meta_title ?? __('Lake Garda & Garda — holiday guide');
-    $metaDesc = $page->meta_description;
+    $metaTitle = trans_page_string($page->meta_title, 'Lake Garda & Garda — beaches, old town, boat trips');
+    $metaDesc = trans_page_string(
+        filled($page->meta_description) ? $page->meta_description : null,
+        'Why stay in Garda on Lake Garda: beaches, restaurants, hiking, family activities, and day trips. Plan your holiday apartment stay.'
+    );
     $canonical = $page->canonical_url ?? localized_route('lake-garda');
+    $ogTitle = filled($page->og_title) ? trans_page_string($page->og_title, '') : null;
+    $ogDesc = filled($page->og_description) ? trans_page_string($page->og_description, '') : null;
 @endphp
 
 @push('meta')
-<x-seo-meta :title="$metaTitle" :description="$metaDesc" :canonical="$canonical" :og-title="$page->og_title ?? $metaTitle" :og-description="$page->og_description ?? $metaDesc" />
+<x-seo-meta :title="$metaTitle" :description="$metaDesc" :canonical="$canonical" :og-title="$ogTitle ?? $metaTitle" :og-description="$ogDesc ?? $metaDesc" />
 @endpush
 
 @section('content')
 <x-inner-page-hero
     :image-src="$headerHeroSrc"
-    :title="$b['hero_title'] ?? __('Lake Garda from Garda')"
-    :subtitle="$b['hero_subtitle'] ?? ''"
+    :title="$b['hero_title'] ?? null"
+    title-fallback="Lake Garda from Garda"
+    :subtitle="$b['hero_subtitle'] ?? null"
+    subtitle-fallback="Italy’s largest lake—olive groves, clear water, medieval towns, and a pace that feels like a real holiday."
     :page-label="__('Lake Garda')"
 />
 

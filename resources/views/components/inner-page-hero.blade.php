@@ -1,14 +1,20 @@
 @props([
     'imageSrc' => '',
     'title' => '',
+    'titleFallback' => '',
     'subtitle' => '',
+    'subtitleFallback' => '',
     'pageLabel' => '',
 ])
 
 @php
     use App\Support\HtmlTranslationSanity;
     $hasImage = ($imageSrc ?? '') !== '';
-    $safeSubtitle = HtmlTranslationSanity::toDisplayableHtml($subtitle ?? '');
+    $hasTitle = is_string($title) && trim($title) !== '';
+    $hasSubtitle = is_string($subtitle) && trim($subtitle) !== '';
+    $displayTitle = trans_page_string($hasTitle ? trim($title) : null, (string) ($titleFallback ?? ''));
+    $rawSubtitle = trans_page_string($hasSubtitle ? trim($subtitle) : null, (string) ($subtitleFallback ?? ''));
+    $safeSubtitle = HtmlTranslationSanity::toDisplayableHtml($rawSubtitle);
 @endphp
 
 {{--
@@ -55,7 +61,7 @@
             </nav>
             <h1
                 class="mt-6 w-full max-w-none font-display text-5xl font-bold leading-[0.95] tracking-tight text-white drop-shadow-[0_12px_36px_rgba(0,0,0,0.5)] sm:text-6xl lg:text-7xl"
-            >{{ $title }}</h1>
+            >{{ $displayTitle }}</h1>
             @if($safeSubtitle !== '')
                 <div class="prose prose-invert prose-lg mt-5 w-full max-w-none text-white [&_*]:!text-white [&_a]:!text-white/95 prose-p:my-0 prose-p:leading-relaxed prose-a:underline-offset-2 drop-shadow-[0_6px_18px_rgba(0,0,0,0.4)] md:prose-xl">{!! $safeSubtitle !!}</div>
             @endif

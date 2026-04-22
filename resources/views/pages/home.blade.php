@@ -14,8 +14,15 @@
     }
     $ctaTitle = $b['cta_title'] ?? '';
     $ctaText = $b['cta_text'] ?? '';
-    $metaTitle = $page->meta_title ?? $page->title;
-    $metaDesc = $page->meta_description;
+    $metaTitle = filled($page->meta_title)
+        ? trans_page_string($page->meta_title, '')
+        : trans_page_string(null, 'Lake Garda apartments in Garda — holiday rentals');
+    $metaDesc = trans_page_string(
+        filled($page->meta_description) ? $page->meta_description : null,
+        'Premium holiday apartments in Garda on Lake Garda. Direct booking inquiries, fast replies, and local hosting. Ideal for couples and families.'
+    );
+    $ogTitle = filled($page->og_title) ? trans_page_string($page->og_title, '') : null;
+    $ogDesc = filled($page->og_description) ? trans_page_string($page->og_description, '') : null;
     $canonical = $page->canonical_url ?? localized_route('home');
     $showHero = false;
     foreach ($heroSlides as $slide) {
@@ -31,8 +38,8 @@
     :title="$metaTitle"
     :description="$metaDesc"
     :canonical="$canonical"
-    :og-title="$page->og_title ?? $metaTitle"
-    :og-description="$page->og_description ?? $metaDesc"
+    :og-title="$ogTitle ?? $metaTitle"
+    :og-description="$ogDesc ?? $metaDesc"
 />
 @endpush
 

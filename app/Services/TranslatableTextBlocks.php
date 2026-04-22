@@ -12,6 +12,9 @@ final class TranslatableTextBlocks
         'eyebrow',
         'title',
         'subtitle',
+        'hero_title',
+        'hero_subtitle',
+        'reassurance',
         'image_alt',
         'primary_cta_label',
         'secondary_cta_label',
@@ -40,6 +43,8 @@ final class TranslatableTextBlocks
         'attractions',
         'for_couples',
         'for_families',
+        'hero_subtitle',
+        'reassurance',
     ];
 
     /**

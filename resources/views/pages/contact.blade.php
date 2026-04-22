@@ -1,25 +1,42 @@
 @extends('layouts.site')
 
 @php
+    use App\Support\HtmlTranslationSanity;
     use App\Support\MediaUrl;
     $b = $page->blocks ?? [];
     $headerHeroSrc = MediaUrl::public($b['hero_header_image_path'] ?? '');
-    $metaTitle = $page->meta_title ?? __('Contact — booking requests');
-    $metaDesc = $page->meta_description;
+    $metaTitle = trans_page_string($page->meta_title, 'Contact — booking requests Lake Garda');
+    $metaDesc = trans_page_string(
+        filled($page->meta_description) ? $page->meta_description : null,
+        'Call, WhatsApp, or send a booking request for our apartments in Garda on Lake Garda. Fast replies.'
+    );
     $canonical = $page->canonical_url ?? localized_route('contact');
+    $ogTitle = filled($page->og_title) ? trans_page_string($page->og_title, '') : null;
+    $ogDesc = filled($page->og_description) ? trans_page_string($page->og_description, '') : null;
+    $reassuranceRaw = $b['reassurance'] ?? null;
+    if ($reassuranceRaw === null || trim($reassuranceRaw) === '') {
+        $reassuranceForDisplay = trans_page_string(null, 'We typically reply within a few hours during the day (CET). For urgent matters, call us.');
+    } else {
+        $reassuranceForDisplay = (strip_tags($reassuranceRaw) === $reassuranceRaw)
+            ? trans_page_string($reassuranceRaw, '')
+            : $reassuranceRaw;
+    }
+    $reassuranceHtml = HtmlTranslationSanity::toDisplayableHtml($reassuranceForDisplay);
     $waNumber = $siteWhatsapp ?: $sitePhoneTel;
     $waUrl = $waNumber ? 'https://wa.me/'.preg_replace('/\D/', '', $waNumber) : null;
 @endphp
 
 @push('meta')
-<x-seo-meta :title="$metaTitle" :description="$metaDesc" :canonical="$canonical" :og-title="$page->og_title ?? $metaTitle" :og-description="$page->og_description ?? $metaDesc" />
+<x-seo-meta :title="$metaTitle" :description="$metaDesc" :canonical="$canonical" :og-title="$ogTitle ?? $metaTitle" :og-description="$ogDesc ?? $metaDesc" />
 @endpush
 
 @section('content')
 <x-inner-page-hero
     :image-src="$headerHeroSrc"
-    :title="$b['hero_title'] ?? __('Contact & booking')"
-    :subtitle="$b['hero_subtitle'] ?? __('Send your dates and questions—we reply as quickly as we can.')"
+    :title="$b['hero_title'] ?? null"
+    title-fallback="Contact & booking"
+    :subtitle="$b['hero_subtitle'] ?? null"
+    subtitle-fallback="Send your dates and questions—we reply as quickly as we can."
     :page-label="__('Contact')"
 />
 
@@ -31,7 +48,7 @@
     <div class="grid gap-12 lg:grid-cols-2">
         <div>
             <h2 class="font-display text-2xl font-semibold text-lake-950">{{ __('Get in touch') }}</h2>
-            <div class="prose prose-stone prose-sm mt-2 max-w-none text-stone-600 prose-p:my-1">{!! $b['reassurance'] ?? __('We typically reply within a few hours during the day (CET).') !!}</div>
+            <div class="prose prose-stone prose-sm mt-2 max-w-none text-stone-600 prose-p:my-1">{!! $reassuranceHtml !!}</div>
             <ul class="mt-8 space-y-4">
                 <li>
                     <a href="tel:{{ $sitePhoneTel }}" class="group inline-flex items-start gap-3 text-base font-medium text-lake-950 transition hover:text-lake-800">

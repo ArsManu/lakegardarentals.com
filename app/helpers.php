@@ -48,6 +48,26 @@ if (! function_exists('localized_hreflang_urls')) {
     }
 }
 
+if (! function_exists('trans_page_string')) {
+    /**
+     * Translate a CMS value when it is plain text, using the English string as the JSON key.
+     * If the value contains HTML (e.g. Quill), it is left unchanged so DB locale merges / OpenAI
+     * translations are used instead.
+     */
+    function trans_page_string(?string $value, string $fallback = ''): string
+    {
+        $s = (is_string($value) && trim($value) !== '') ? trim($value) : $fallback;
+        if ($s === '') {
+            return '';
+        }
+        if (strip_tags($s) !== $s) {
+            return (is_string($value) && trim($value) !== '') ? (string) $value : $fallback;
+        }
+
+        return __($s);
+    }
+}
+
 if (! function_exists('localized_route_is_any')) {
     /**
      * @param  list<string>  $names
