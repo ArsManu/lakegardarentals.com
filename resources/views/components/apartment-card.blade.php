@@ -3,6 +3,7 @@
 @php
     $img = $apartment->coverImagePath();
     $imgUrl = $img ? asset('storage/'.$img) : null;
+    $shortPlain = \App\Support\PlainText::fromHtml($apartment->short_description);
 @endphp
 
 <article class="group flex flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm transition hover:shadow-md">
@@ -19,7 +20,7 @@
         <h3 class="font-display text-2xl font-semibold leading-snug tracking-tight text-lake-950 sm:text-3xl">
             <a href="{{ route('apartments.show', $apartment) }}" class="hover:text-lake-800">{{ $apartment->name }}</a>
         </h3>
-        <p class="mt-3 line-clamp-3 text-base leading-relaxed text-stone-600">{{ \Illuminate\Support\Str::limit(strip_tags($apartment->short_description), 280) }}</p>
+        <p class="mt-3 line-clamp-3 text-base leading-relaxed text-stone-600">{{ \Illuminate\Support\Str::limit($shortPlain, 280) }}</p>
         <ul class="mt-4 flex flex-wrap gap-2">
             @foreach($apartment->amenities->take(4) as $am)
                 <li class="rounded-full bg-olive-100 px-3.5 py-1.5 text-sm font-medium text-olive-800">{{ $am->name }}</li>

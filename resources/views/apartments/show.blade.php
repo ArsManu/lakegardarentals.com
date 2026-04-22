@@ -2,7 +2,7 @@
 
 @php
     $metaTitle = $apartment->meta_title ?? $apartment->name.' — '. __('Lake Garda apartment rental');
-    $metaDesc = strip_tags((string) ($apartment->meta_description ?? $apartment->short_description ?? ''));
+    $metaDesc = \App\Support\PlainText::fromHtml((string) ($apartment->meta_description ?? $apartment->short_description ?? ''));
     $canonical = $apartment->canonical_url ?? route('apartments.show', $apartment);
     $cover = $apartment->coverImagePath();
     $ogImage = $cover ? asset('storage/'.$cover) : null;
@@ -26,7 +26,7 @@
     $addressLine = $apartment->address
         ? trim($apartment->address)
         : ($apartment->location_text
-            ? \Illuminate\Support\Str::of(strip_tags($apartment->location_text))->explode("\n")->map(fn ($l) => trim($l))->filter()->first()
+            ? \Illuminate\Support\Str::of(\App\Support\PlainText::fromHtml($apartment->location_text))->explode("\n")->map(fn ($l) => trim($l))->filter()->first()
             : null);
     if (! $addressLine) {
         $addressLine = __('Lake Garda, Italy');
@@ -55,7 +55,7 @@
     '@context' => 'https://schema.org',
     '@type' => 'VacationRental',
     'name' => $apartment->name,
-    'description' => strip_tags($apartment->short_description),
+    'description' => \App\Support\PlainText::fromHtml($apartment->short_description),
     'url' => route('apartments.show', $apartment),
     'image' => $apartment->images->map(fn ($i) => asset('storage/'.$i->path))->values()->all(),
     'occupancy' => [
